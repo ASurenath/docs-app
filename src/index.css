@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap');
+body{
+  background-image: linear-gradient(to bottom,rgb(239, 239, 255),white);
+  background-size: 100%/100%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+.mainContainer{
+  display: flex;
+  flex-direction: column;
+  justify-content:center;
+  align-items: center;
+  padding: 20px;
+}
+body a{
+  text-decoration: none;
+}
