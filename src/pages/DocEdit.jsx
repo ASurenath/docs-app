@@ -7,7 +7,7 @@ import { db } from '../firebaseConfig';
 import { Box, Button, Container, IconButton, Modal, TextField, Typography } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ReplyIcon from '@mui/icons-material/Reply';
-
+import { format, toDate } from "date-fns";
 
 const style = {
     boxSizing: 'border-box',
@@ -85,24 +85,34 @@ function DocEdit() {
         console.log(value)
             , [value]
     })
-    console.log(id);
+    console.log(data);
 
     return (
         <Container>
-            <div style={{ display: 'flex' }}>
-                <Link to={'/'}>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex' }}>
+                    <Link to={'/'}>
+                        <Typography variant="h4" component="h2" style={{ padding: '10px' }}>
+                            <ReplyIcon /> Home
+                        </Typography>
+                    </Link>
+
+
                     <Typography variant="h4" component="h2" style={{ padding: '10px' }}>
-                        <ReplyIcon /> Home
-                    </Typography></Link>
+                        {/* <ArrowForwardIcon /> */}
+                        Title: {data?.title}
+                    </Typography>
+                    <IconButton onClick={handleOpen} color='info' size='small'>
+                        <i className="fa-solid fa-pen"></i>
+                    </IconButton>
+                </div>
+                <div>
+                    <Typography variant="p" component="p" style={{ padding: '10px', fontSize: '0.8em', fontStyle: 'italic'}}>
+                        Last edited:
+                        {data?.lastEditTime && (format((toDate(data?.lastEditTime?.seconds*1000)),"dd/MM/yy hh:mm a"))}
 
-
-                <Typography variant="h4" component="h2" style={{ padding: '10px' }}>
-                    {/* <ArrowForwardIcon /> */}
-                    Title: {data.title} </Typography>
-
-                <IconButton onClick={handleOpen} color='info' size='small'>
-                    <i className="fa-solid fa-pen"></i>
-                </IconButton>
+                    </Typography>
+                </div>
             </div>
 
             <ReactQuill theme="snow" value={value} onChange={e => setValue(e)} style={{ height: '70vh', backgroundColor: 'white' }} />
@@ -117,10 +127,10 @@ function DocEdit() {
                     <Typography id="modal-modal-title" variant="h4" component="h2">
                         Edit doc title
                     </Typography>
-                    <TextField onChange={e => setTitle(e.target.value)} id="outlined-basic" label="Title" variant="outlined" style={{ width: '100%' }} value={title} contentEditable/>
+                    <TextField onChange={e => setTitle(e.target.value)} id="outlined-basic" label="Title" variant="outlined" style={{ width: '100%' }} value={title} contentEditable />
                     <div style={{ display: 'flex', justifyContent: 'space-evenly', width: '100%' }}>
                         <Button onClick={handleClose} variant="outlined" color='info' size='large' style={{ margin: '10px' }}>Cancel</Button>
-                        <Button onClick={updateTitle} variant="contained" color='success' size='large' style={{ margin: '10px' }}>Add</Button>
+                        <Button onClick={updateTitle} variant="contained" color='success' size='large' style={{ margin: '10px' }}>Save</Button>
                     </div>
                 </Box>
             </Modal>

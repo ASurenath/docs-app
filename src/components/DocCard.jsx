@@ -1,10 +1,11 @@
-import { Box, Button, IconButton, Modal, Typography } from '@mui/material'
+import { Box, Button, IconButton, Modal, Typography, colors } from '@mui/material'
 import React from 'react'
 import Paper from '@mui/material/Paper';
 import { collection, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import { styled } from '@mui/material/styles';
 import { Link, useNavigate } from 'react-router-dom';
+import { format, toDate } from 'date-fns';
 
 
 
@@ -35,41 +36,55 @@ function DocCard({ document }) {
   const collectionRef = collection(db, 'DocumentsData')
   const navigate = useNavigate()
 
-  const handleDelete =  () => {
+  const handleDelete = () => {
     handleClose()
     deleteDoc(doc(collectionRef, document.id))
-    .then(()=>
-    {
-    alert('Document deleted successfully.')})
-    .catch(()=>{alert('Could not delete delete document!')})
+      .then(() => {
+        alert('Document deleted successfully.')
+      })
+      .catch(() => { alert('Could not delete delete document!') })
 
   }
 
 
   return (
     <>
-      <div style={{ minHeight: '30vh' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Typography variant="h5" component="h2">
 
-            {document.title}
-          </Typography>
-          <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
-            <IconButton onClick={() => navigate(`/edit/${document.id}`)} color='info' size='small'>
-              <i className="fa-solid fa-pen"></i>
-            </IconButton>
-            <IconButton onClick={handleOpen} color='error' size='small'>
-              <i className="fa-solid fa-trash-can"></i>
-            </IconButton>
+      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: '30vh' }}>
+        <div>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Typography variant="h5" component="h2">
+
+              {document.title}
+            </Typography>
+            <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+              <IconButton onClick={() => navigate(`/edit/${document.id}`)} color='info' size='small'>
+                <i className="fa-solid fa-pen"></i>
+              </IconButton>
+              <IconButton onClick={handleOpen} color='error' size='small'>
+                <i className="fa-solid fa-trash-can"></i>
+              </IconButton>
+            </div>
+
+
           </div>
+          <hr style={{ height: '1px', backgroundColor: 'lightgrey', border: 'none' }} />
+          <div dangerouslySetInnerHTML={{ __html: document.content }}>
 
-
+          </div>
         </div>
-        <hr />
-        <div dangerouslySetInnerHTML={{ __html: document.content }}>
-
+        <div style={{ fontSize: '0.8em', fontStyle: 'italic' ,textAlign:'end'}}>
+          <hr style={{ height: '1px', backgroundColor: 'lightgrey', border: 'none' }} />
+          Last Edited:
+          {document?.lastEditTime && (format((toDate(document?.lastEditTime?.seconds * 1000)), "dd/MM/yy hh:mm a"))}
+          <br />
+          Created:
+          {document?.createTime && (format((toDate(document?.createTime?.seconds * 1000)), "dd/MM/yy hh:mm a"))}
+          
         </div>
+
       </div>
+
 
       <Modal
         open={open}
@@ -85,7 +100,8 @@ function DocCard({ document }) {
             <Button onClick={handleClose} variant="outlined" color='info' size='large' style={{ margin: '10px' }}>Cancel</Button>
             <Button onClick={handleDelete} variant="outlined" color='error' size='large' style={{ margin: '10px' }}>Delete</Button>
 
-          </div>        </Box>
+          </div>
+        </Box>
       </Modal>
     </>
   )
